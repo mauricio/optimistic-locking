@@ -24,6 +24,10 @@ github.com/pkg/errors
 github.com/pmezard/go-difflib/difflib
 # github.com/rs/zerolog v1.25.0
 ## explicit; go 1.15
+github.com/rs/zerolog
+github.com/rs/zerolog/internal/cbor
+github.com/rs/zerolog/internal/json
+github.com/rs/zerolog/log
 # github.com/stretchr/testify v1.7.0
 ## explicit; go 1.13
 github.com/stretchr/testify/assert

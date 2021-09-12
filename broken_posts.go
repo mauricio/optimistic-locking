@@ -70,6 +70,7 @@ func (s *sqlitePosts) Save(ctx context.Context, post *Post) (err error) {
 			Where(sq.Eq{"uuid": post.UUID}).
 			Set("title", post.Title).
 			Set("content", post.Content).
+			RunWith(s.db).
 			ExecContext(ctx)
 	}
 

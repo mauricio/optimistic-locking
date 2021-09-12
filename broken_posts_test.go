@@ -32,41 +32,25 @@ func withPosts(t *testing.T, f func(t *testing.T, p Posts)) {
 	f(t, posts)
 }
 
-func TestSqlitePosts_Save(t *testing.T) {
-	tt := []struct {
-		name       string
-		post       *Post
-		expectPost bool
-		err        string
-	}{
-		{
-			name: "finds the post it has inserted",
-			post: &Post{
-				Title:   "sample title",
-				Content: "sample content",
-			},
-			expectPost: true,
-		},
-	}
+func TestSqlitePosts_SaveCreating(t *testing.T) {
+	withPosts(t, func(t *testing.T, p Posts) {
+		post := &Post{
+			Title:   "sample post",
+			Content: "sample content",
+		}
 
-	for _, ts := range tt {
-		t.Run(ts.name, func(t *testing.T) {
-			withPosts(t, func(t *testing.T, p Posts) {
-				require.NoError(t, p.Save(testCtx, ts.post))
+		require.NoError(t, p.Save(testCtx, post))
 
-				found, err := p.Find(testCtx, ts.post.UUID)
-				if ts.err != "" {
-					assert.EqualError(t, err, ts.err)
-				} else {
-					assert.NoError(t, err)
-				}
+		found, err := p.Find(testCtx, post.UUID)
+		require.NoError(t, err)
 
-				if ts.expectPost {
-					assert.Equal(t, ts.post, found)
-				} else {
-					assert.Nil(t, found)
-				}
-			})
-		})
-	}
+		assert.Equal(t, post, found)
+
+		post.Content = "Updated content"
+		require.NoError(t, p.Save(testCtx, post))
+
+		found, err = p.Find(testCtx, post.UUID)
+		require.NoError(t, err)
+		assert.Equal(t, post, found)
+	})
 }
